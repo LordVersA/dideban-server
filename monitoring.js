@@ -17,6 +17,7 @@ app.get("/", async (req, res) => {
             currentLoad: null,
             fsSize: null,
             networkStats: null,
+            timezone: getSystemTimeZone(),
         };
 
         const [mem, currentLoad, fsSize, networkStats, redis, mysql] = await Promise.all([
@@ -49,6 +50,7 @@ app.get("/", async (req, res) => {
 const https = require("https");
 const checkMysqlHealth = require("./mysqlHealthCheck");
 const checkRedisHealth = require("./redisHealthCheck");
+const { getSystemTimeZone } = require("./timezone");
 const port = process.env.port || 6837;
 app.listen(port, () => {
     https
