@@ -5,6 +5,7 @@ const checkMysqlHealth = require("./mysqlHealthCheck");
 const checkRedisHealth = require("./redisHealthCheck");
 const { getSystemTimeZone } = require("./timezone");
 const checkTCPConnections = require("./TCPconnections");
+const checkFirewallStatus = require("./firewall");
 const port = process.env.port || 6837;
 
 const si = require("systeminformation");
