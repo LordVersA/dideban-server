@@ -19,7 +19,7 @@ app.get("/", async (req, res) => {
             type: "global",
             mysql: { enable: false, connection: false, query: false },
             redis: { enable: false, connection: false, query: false },
-            firewall: { enable: true, installed: false, enable: false },
+            firewall: { enable: true, installed: false, active: false },
             tcp: { enable: true, netstats_installed: false, established_count: null },
             time: si.time(),
             mem: null,
@@ -56,7 +56,7 @@ app.get("/", async (req, res) => {
             newEvent.firewall = firewall;
         }
 
-        if (firewall) {
+        if (tcp) {
             newEvent.tcp = tcp;
         }
 
@@ -68,7 +68,9 @@ app.get("/", async (req, res) => {
     }
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
+    console.log(await checkFirewallStatus());
+
     https
         .get("https://api.ipify.org", (res) => {
             let data = "";

@@ -3,7 +3,8 @@ const { exec } = require("child_process");
 const fs = require("node:fs");
 
 const checkFirewallStatus = async () => {
-    const message = { enable: true, installed: false, enable: false };
+    const message = { enable: true, installed: false, active: false };
+
     message.installed = fs.existsSync("/usr/sbin/firewalld");
 
     try {
