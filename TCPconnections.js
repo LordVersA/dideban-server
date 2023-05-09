@@ -7,14 +7,8 @@ const checkTCPConnections = async () => {
     try {
         const firewalldPing = promisify(exec)("netstat -ant | grep -i 'established' | grep ':80 |:443 ' | wc -l");
         const { stdout, stderr, error } = await firewalldPing;
-        if (error) {
-            return error;
-        }
-
-        if (stderr) {
-            return stderr;
-        }
-        if (stdout.includes("command not found")) {
+        if (error = error + stderr) {
+          if(error.includes("command not found"))
             return message;
         } else {
             message.netstats_installed = true;
@@ -23,7 +17,7 @@ const checkTCPConnections = async () => {
 
         return message;
     } catch (error) {
-        return error;
+        return message;
     }
 };
 
