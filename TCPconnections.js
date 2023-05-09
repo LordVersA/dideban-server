@@ -18,7 +18,7 @@ const checkTCPConnections = async () => {
             message.netstats_installed = true;
         }
         console.log("3.here:", stdout);
-        message.established_count = stdout.replace("\n", "");
+        message.established_count = +stdout.replace("\n", "");
 
         return message;
     } catch (error) {
