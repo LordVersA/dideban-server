@@ -7,7 +7,7 @@ const checkTCPConnections = async () => {
     try {
         const tcpPing = promisify(exec)("netstat -ant | grep -i 'established' | grep ':80 |:443 ' | wc -l");
         const { stdout, stderr, error } = await tcpPing;
-        if ((error + stderr).trim()) {
+        if (error || stderr) {
             console.log("1.here:", error + stderr);
             return message;
         }
@@ -17,7 +17,7 @@ const checkTCPConnections = async () => {
         } else {
             message.netstats_installed = true;
         }
-        console.log("3.here:",stdout);
+        console.log("3.here:", stdout);
         message.established_count = stdout.replace("\n", "");
 
         return message;
