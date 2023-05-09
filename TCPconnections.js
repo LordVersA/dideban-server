@@ -7,13 +7,15 @@ const checkTCPConnections = async () => {
     try {
         const tcpPing = promisify(exec)("netstat -ant | grep -i 'established' | grep ':80 |:443 ' | wc -l");
         const { stdout, stderr, error } = await tcpPing;
-        if ((error = error + stderr)) {
-            if (!error.includes("command not found")) {
-                message.netstats_installed = true;
-            } else {
-                return message;
-            }
+        if ((error + stderr).trim().length > 0) {
+            return message;
         }
+        if ((error + stderr + stdout).includes("command not found")) {
+            return message;
+        } else {
+            message.netstats_installed = true;
+        }
+        console.log(stdout);
         message.established_count = stdout.replace("\n", "");
 
         return message;
