@@ -7,7 +7,7 @@ const checkTCPConnections = async () => {
     try {
         const tcpPing = promisify(exec)("netstat -ant | grep -i 'established' | grep ':80 |:443 ' | wc -l");
         const { stdout, stderr, error } = await tcpPing;
-        if ((error + stderr).trim().length > 0) {
+        if ((error + stderr).trim()) {
             console.log("1.here:", error + stderr);
             return message;
         }
