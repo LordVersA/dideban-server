@@ -24,7 +24,7 @@ const checkFirewallStatus = async () => {
         }
         return message;
     } catch (error) {
-        return error;
+        return message;
     }
 };
 
