@@ -21,7 +21,7 @@ const checkFirewallStatus = async () => {
         const isFirewalldRunning = stdout.includes("Active: active");
 
         if (isFirewalldRunning) {
-            message.enable = true;
+            message.active = true;
         }
         return message;
     } catch (error) {
