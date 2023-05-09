@@ -7,11 +7,11 @@ const checkTCPConnections = async () => {
     try {
         const firewalldPing = promisify(exec)("netstat -ant | grep -i 'established' | grep ':80 |:443 ' | wc -l");
         const { stdout, stderr, error } = await firewalldPing;
-        if (error = error + stderr) {
-          if(error.includes("command not found"))
+        if ((error = error + stderr)) {
+            if (!error.includes("command not found")) {
+                message.netstats_installed = true;
+            }
             return message;
-        } else {
-            message.netstats_installed = true;
         }
         message.established_count = stdout;
 
