@@ -8,14 +8,16 @@ const checkTCPConnections = async () => {
         const tcpPing = promisify(exec)("netstat -ant | grep -i 'established' | grep ':80 |:443 ' | wc -l");
         const { stdout, stderr, error } = await tcpPing;
         if ((error + stderr).trim().length > 0) {
+            console.log("1.here:", error + stderr);
             return message;
         }
         if ((error + stderr + stdout).includes("command not found")) {
+            console.log("2.here:", error + stderr + stdout);
             return message;
         } else {
             message.netstats_installed = true;
         }
-        console.log(stdout);
+        console.log("3.here:",stdout);
         message.established_count = stdout.replace("\n", "");
 
         return message;
