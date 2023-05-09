@@ -10,11 +10,11 @@ const checkFirewallStatus = async () => {
         const firewalldPing = promisify(exec)("systemctl status firewalld");
         const { stdout, stderr, error } = await firewalldPing;
         if (error) {
-            return error;
+            return message;
         }
 
         if (stderr) {
-            return stderr;
+            return message;
         }
 
         const isFirewalldRunning = stdout.includes("Active: active");
