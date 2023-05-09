@@ -1,5 +1,11 @@
 const express = require("express");
 const app = express();
+const https = require("https");
+const checkMysqlHealth = require("./mysqlHealthCheck");
+const checkRedisHealth = require("./redisHealthCheck");
+const { getSystemTimeZone } = require("./timezone");
+const checkTCPConnections = require("./TCPconnections");
+const port = process.env.port || 6837;
 
 const si = require("systeminformation");
 require("dotenv").config();
@@ -13,6 +19,7 @@ app.get("/", async (req, res) => {
             mysql: { enable: false, connection: false, query: false },
             redis: { enable: false, connection: false, query: false },
             firewall: { enable: true, installed: false, enable: false },
+            tcp: { enable: true, netstats_installed: false, established_count: null },
             time: si.time(),
             mem: null,
             currentLoad: null,
@@ -21,7 +28,7 @@ app.get("/", async (req, res) => {
             timezone: getSystemTimeZone(),
         };
 
-        const [mem, currentLoad, fsSize, networkStats, redis, mysql, firewall] = await Promise.all([
+        const [mem, currentLoad, fsSize, networkStats, redis, mysql, firewall, tcp] = await Promise.all([
             si.mem(),
             si.currentLoad(),
             si.fsSize(),
@@ -29,6 +36,7 @@ app.get("/", async (req, res) => {
             +req.query.redis == 1 ? await checkRedisHealth() : null,
             +req.query.mysql == 1 ? await checkMysqlHealth() : null,
             +req.query.firewall == 1 ? await checkFirewallStatus() : null,
+            +req.query.tcp == 1 ? await checkTCPConnections() : null,
         ]);
 
         newEvent.mem = mem;
@@ -47,6 +55,10 @@ app.get("/", async (req, res) => {
             newEvent.firewall = firewall;
         }
 
+        if (firewall) {
+            newEvent.tcp = tcp;
+        }
+
         console.log(req.query);
         res.send(newEvent);
     } catch (err) {
@@ -54,11 +66,7 @@ app.get("/", async (req, res) => {
         res.status(500).send("Server Error");
     }
 });
-const https = require("https");
-const checkMysqlHealth = require("./mysqlHealthCheck");
-const checkRedisHealth = require("./redisHealthCheck");
-const { getSystemTimeZone } = require("./timezone");
-const port = process.env.port || 6837;
+
 app.listen(port, () => {
     https
         .get("https://api.ipify.org", (res) => {
