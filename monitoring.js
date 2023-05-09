@@ -12,6 +12,7 @@ app.get("/", async (req, res) => {
             type: "global",
             mysql: { enable: false, connection: false, query: false },
             redis: { enable: false, connection: false, query: false },
+            firewall: { enable: true, installed: false, enable: false },
             time: si.time(),
             mem: null,
             currentLoad: null,
@@ -20,13 +21,14 @@ app.get("/", async (req, res) => {
             timezone: getSystemTimeZone(),
         };
 
-        const [mem, currentLoad, fsSize, networkStats, redis, mysql] = await Promise.all([
+        const [mem, currentLoad, fsSize, networkStats, redis, mysql, firewall] = await Promise.all([
             si.mem(),
             si.currentLoad(),
             si.fsSize(),
             si.networkStats(),
             +req.query.redis == 1 ? await checkRedisHealth() : null,
             +req.query.mysql == 1 ? await checkMysqlHealth() : null,
+            +req.query.firewall == 1 ? await checkFirewallStatus() : null,
         ]);
 
         newEvent.mem = mem;
@@ -40,6 +42,11 @@ app.get("/", async (req, res) => {
         if (redis) {
             newEvent.redis = redis;
         }
+
+        if (firewall) {
+            newEvent.firewall = firewall;
+        }
+
         console.log(req.query);
         res.send(newEvent);
     } catch (err) {
