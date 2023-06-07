@@ -5,7 +5,7 @@ const checkTCPConnections = async () => {
     const message = { enable: true, netstats_installed: false, established_count: null };
 
     try {
-        const tcpPing = promisify(exec)("netstat -ant | grep -i 'established' | grep ':80 |:443 ' | wc -l");
+        const tcpPing = promisify(exec)("netstat -ant | grep -i 'established' | grep -e ':80' -e ':443' | wc -l");
         const { stdout, stderr, error } = await tcpPing;
         if (error || stderr) {
             return message;

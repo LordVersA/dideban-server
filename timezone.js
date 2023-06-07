@@ -12,9 +12,9 @@ const getSystemTimeZone = () => {
     } else {
         try {
             const output = execSync("timedatectl").toString();
-            const match = output.match(/Time zone: ([^\s]+) \(([\+\-\d:]+), ([\+\-\d:]+)\)/);
+            const match = output.match(/Time zone: ([A-Za-z\/]+\s*\([^)]+\))/);
             if (match) {
-                return `${match[1]} (${match[2]}, ${match[3]})`;
+                return `${match[1]}`;
             } else {
                 return null;
             }
